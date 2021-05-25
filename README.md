@@ -11,7 +11,7 @@ To use the code, please follow these steps:
 1. Make sure that current versions of R (https://cran.r-project.org) and RStudio (https://www.rstudio.com) are installed 
 2. Download the whole repository (Code -> Download ZIP)
 3. Unzip to a local folder on your computer
-4. Open the file EFAtutorial.Rproj. 
+4. Open the file "00_EFAtutorial.Rproj". 
 5. This should open a separate instance of Rstudio with all necessary paths.
 6. You can open and run all code from this point.
 
