@@ -20,8 +20,8 @@ load("results/01_data_import/erpdata.Rdata")
 
 ######### Plot the Time Courses (i.e., factor loadings) #########
 
-for (iFile in c("results/02ab_efa/efafit_ad23.Rdata",
-                "results/02ab_efa/efafit_ch21.Rdata")){
+for (iFile in c("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",
+                "results/02bc_rotation_score/rotfit_ch21_geomin0.01.Rdata")){
   
   ## Load the results file from the previous script.
   # Please remember that this script needs to be run once for each group.
@@ -66,13 +66,13 @@ for (iFile in c("results/02ab_efa/efafit_ad23.Rdata",
   ggplot(data = loadings, aes(x = lat, y = value, color = Factor, size = highlight)) +
     geom_line() + 
     scale_size_manual(values = c(0.7,1.5)) +
-    guides(size = FALSE) +
+    guides(size = FALSE, color = guide_legend(ncol = 2)) +
     ylim(-1,5) + 
     xlab("Time [ms]") +
     ylab("Unstandardized Loadings") +
     labs(title = ifelse(efaFit$group == "ad", "Adult EFA Geomin (0.01)", "Child EFA Geomin (0.01)")) + 
     theme_classic() +
-    scale_color_manual(values = factorColors)
+    scale_color_manual(values = factorColors) 
   
   ggsave(paste0("results/03a_factor_inspection/rotfit_", efaFit$group, efaFit$factors, "_geomin0.01.eps"), device = "eps",
          width = 6, height = 3.5) 
