@@ -38,9 +38,9 @@ load("results/01_data_import/erpdata.Rdata")
 allGAVRS <- aggregate(. ~ cond + chan + group, data = erpdata, FUN = mean)
 
 ## Load the data from both EFAs and put the results into separate objects
-load("rotfit_ad23_geomin0.01.Rdata",  temp_env <- new.env())
+load("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",  temp_env <- new.env())
 adEFA <- as.list.environment(temp_env)
-load("rotfit_ch21_geomin0.01.Rdata",  temp_env <- new.env())
+load("results/02bc_rotation_score/rotfit_ch21_geomin0.01.Rdata",  temp_env <- new.env())
 chEFA <- as.list.environment(temp_env)
 
 ## Rename the factor score matrix columns 
@@ -201,8 +201,11 @@ cairo_ps(filename = paste0("results/03b_topoplot_selectFactor/topoplot_", iFacto
 dev.off()
 
 ############ Plot Grand Average ###########
+# Choose electrode site:
+iEl <- "Cz"
+
 ## Plot grand averages separately for each condition
-gavr_plot_ad <- ggplot(gavr2long(allGAVRS, iEl = "Cz", iGroup = "ad", times = times),
+gavr_plot_ad <- ggplot(gavr2long(allGAVRS, iEl = iEl, iGroup = "ad", times = times),
                        aes(x = times,
                            y = value, 
                            color = cond,
@@ -213,7 +216,7 @@ scale_color_manual(values =  c(brewer.pal(n = 11, "RdYlBu")[c(10,2)], "grey49") 
   #theme_linedraw()  + # if you prefer a white background uncomment this
   ylim(12,-8) +   
   labs(x = "Time [s]" , y = "Voltage [µV]", 
-       title = paste0("Adults", ", El: ", iEl),
+       title = paste0("Adults", ", Electrode: ", iEl),
        color = "Condition") +
   theme(plot.title = element_text(color="black", size=14, hjust = 0.5, 
                                   face = "bold"),
@@ -223,7 +226,7 @@ scale_color_manual(values =  c(brewer.pal(n = 11, "RdYlBu")[c(10,2)], "grey49") 
         legend.title = element_text(size = 13, face = "bold"),
         legend.position = "bottom")
 
-gavr_plot_ch <- ggplot(gavr2long(allGAVRS, iEl = "Cz", iGroup = "ch", times = times),
+gavr_plot_ch <- ggplot(gavr2long(allGAVRS, iEl = iEl, iGroup = "ch", times = times),
                       aes(x = times,
                           y = value, 
                           color = cond,
@@ -234,7 +237,7 @@ gavr_plot_ch <- ggplot(gavr2long(allGAVRS, iEl = "Cz", iGroup = "ch", times = ti
   #theme_linedraw()  + # if you prefer a white background uncomment this
   ylim(12,-8) +  
   labs(x = "Time [s]" , y = "Voltage [µV]", 
-       title = paste0("Children, El: ", iEl),
+       title = paste0("Children, Electrode: ", iEl),
        color = "Condition") +
   theme(plot.title = element_text(color="black", size=14, hjust = 0.5, 
                                   face = "bold"),
