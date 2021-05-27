@@ -1,6 +1,10 @@
 # EFA Tutorial
- Accompanying scripts and material to conduct a temporal EFA on ERP data as explained in Scharf, Widmann, Bonmassar & Wetzel (under review, url: TBA).
+Accompanying scripts and material to conduct a temporal EFA on ERP data as explained in Scharf, Widmann, Bonmassar & Wetzel (under review, url: TBA).
 
+## Abstract
+...
+
+## Structure 
 The repository is structured as follows:
 - The main scripts "01*.R" to "05*.R" conduct the EFA-based ERP analysis step by step as explained in the article.
 - "tools" contains some custom functions which are called in the main scripts
@@ -10,6 +14,7 @@ The repository is structured as follows:
 
 <sub><sup>1</sup> Note: The epochs in the set-files are participant averages, **not** trials. We use the electrode positions from these files to make plotting the factor tropographies easier. See *03b_topoplot_allFactors.R* for further details.</sub> 
 
+## How to get started
 To use the code, please follow these steps:
 1. Make sure that current versions of R (https://cran.r-project.org) and RStudio (https://www.rstudio.com) are installed 
 2. Download the whole repository (Code -> Download ZIP)
