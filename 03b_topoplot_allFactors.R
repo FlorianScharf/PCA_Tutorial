@@ -58,7 +58,10 @@ allEFAs <- list(ad = adEFA, ch = chEFA)
 
 ## load subject averages 
 # we will use these to have the channel locations in a format
-# easily understanbale for eegUtils
+# easily understandable for eegUtils
+# Please note that these set-files do NOT contain epoched raw data.
+# Instead, each "epoch" in these datasets is a participant average.
+# see also: https://github.com/widmann/grandaverage/blob/master/pop_grandaverage.m
 allAVRs <- list(
   ad = list(sta = eegUtils::import_set("data/ad-sta.set"), nov = eegUtils::import_set("data/ad-nov.set")),
   ch = list(sta = eegUtils::import_set("data/ch-sta.set"), nov = eegUtils::import_set("data/ch-nov.set"))
