@@ -53,8 +53,12 @@ rotFit$Var = efaFit$Var
 rotFit$group = efaFit$group
 
 ##  Sort factors by variance explained
-# Compute factor variances
-facVar = apply(diag(rotFit$Var) %*% rotFit$loadings * rotFit$loadings %*% rotFit$Phi, MARGIN = 2, FUN = sum) / sum(rotFit$Var) # From Dien ep_doPCA.m
+
+# Compute unstandardized loadings
+L <- rotFit$loadings * rotFit$varSD
+# Compute proportion of variance explained by each factor
+facVar <- diag(rotFit$Phi %*% t(L) %*% (L)) / sum(diag(efaFit$S)) 
+
 # Return indices of the factors ordered by the variance explained
 alignment = order(facVar, decreasing = TRUE)
 # reorder columns of factor loadings matrix in descending order of variance
@@ -84,7 +88,7 @@ age_group_data = as.matrix(erpdata[erpdata$group == efaFit$group, -c(1:4)])
 # Note that "age_group_data" contains the unstandardized ERP individual averages 
 # of the respective group.
 # Therefore, the factor scores are not centered.
-FacScr = age_group_data %*% efaFit$Rinv %*% rotFit$loadings %*% rotFit$Phi
+FacScr = age_group_data %*% efaFit$Sinv %*% (rotFit$loadings * rotFit$varSD) %*% rotFit$Phi
 
 # Rinv ... generalized inverse of the correlation matrix of the sampling points
 # rotFit$loadings ... standardized factor loadings
@@ -94,15 +98,6 @@ FacScr = age_group_data %*% efaFit$Rinv %*% rotFit$loadings %*% rotFit$Phi
 colnames(FacScr) = colnames(paste0("MR", 1:efaFit$factors))
 
 # Show descriptive statistics for the factor scores
-psych::describe(FacScr)
-
-## Normalize factor scores so that they have variances of exactly 1.
-# Please refer to DiStefano et al. (2009) on why the factor scores 
-# have variances slightly smaller than 1 when the regression scoring method
-# is used.
-FacScr = FacScr %*% solve(diag(apply(FacScr, MARGIN = 2, sd)))
-
-# See the change: now all SDs are equal to 1.
 psych::describe(FacScr)
 
 ## We save the factor scores in a separate object and "reunite" them

@@ -132,8 +132,8 @@ names(indLatEst) <- paste0(jackknifeFits, "_facIdx_", facIdx)
 # ideally, the individual loadings should be highly similar
 # any indication that the factor structure varies drastically between
 # subsamples should be inspected closely!
-indLatEst[[1]]$diagPlot
 indLatEst[[2]]$diagPlot
+indLatEst[[1]]$diagPlot
 ###############
 
 ############### Subject latencies to a test ###############

@@ -254,8 +254,8 @@ gavr_plot_ch
 cairo_ps(filename = paste0("results/03b_topoplot_selectFactor/Grand_averages.eps"),
          width = 10, height = 4)
 
-grid.arrange(gavr_plot_ad,
-             gavr_plot_ch,
+grid.arrange(gavr_plot_ch,
+            gavr_plot_ad,
              widths = c(5, 5),
              nrow = 1, ncol = 2
 )

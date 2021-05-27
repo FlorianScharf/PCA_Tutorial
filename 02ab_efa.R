@@ -20,7 +20,7 @@ load("results/01_data_import/erpdata.Rdata")
 
 ## Select group to be analyzed
 # ad = adults; ch = children
-group = "ad"
+group = "ch"
 # Please remember that this script needs to be run once for each group.
 
 
