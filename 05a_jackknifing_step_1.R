@@ -98,8 +98,11 @@ for (iGroup in groups){
     rotFit$group = iGroup
     
     ##  Sort factors by variance explained
-    # Compute factor variances
-    facVar = apply(diag(rotFit$Var) %*% rotFit$loadings * rotFit$loadings %*% rotFit$Phi, MARGIN = 2, FUN = sum) / sum(rotFit$Var) # From Dien ep_doPCA.m
+    # Compute unstandardized loadings
+    L <- rotFit$loadings * rotFit$varSD
+    # Compute proportion of variance explained by each factor
+    facVar <- diag(rotFit$Phi %*% t(L) %*% (L)) / sum(diag(efaFit$S)) 
+    
     # Return indices of the factors ordered by the variance explained
     alignment = order(facVar, decreasing = TRUE)
     # reorder columns of factor loadings matrix in descending order of variance

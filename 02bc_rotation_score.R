@@ -47,6 +47,16 @@ rotFit <- geominQ_multstart(A = efaFit$loadings,  # unrotated loadings
                             # rotation takes too long but we recommend using the default
                             # value if you are seriously interested in the results.
 
+### IMPORTANT: Please increase maxit in case you encounter many warnings
+### regarding non-converged solutions.
+
+#### OPTIONAL: If you want to apply a Promax rotation.
+# Promax does not rely on a general gradient projection algorithm
+# and does not require random starts (but it tends to conflate factors
+# earlier than Geomin):
+
+# rotFit <- Promax(efaFit$loadings, normalize = TRUE)
+
 ## Transfer variances and standard deviations into the new fit object.
 rotFit$varSD = efaFit$varSD
 rotFit$Var = efaFit$Var

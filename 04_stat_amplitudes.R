@@ -12,7 +12,7 @@ library(afex)
 library(psych)
 library(BayesFactor)
 library(bayestestR)
-
+library(ggplot2)
 
 ## Load the data from both EFAs and put the results into separate objects
 load("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",  temp_env <- new.env())
@@ -66,19 +66,20 @@ scores = rbind(chEFA$scores[, c("group", "cond", "subj", "chan", "P2", "eP3a", "
 
 # Export final file, if you prefer, you can analyze the scores in a different
 # software such as JASP or SPSS.
-write.table(scores, file = "results/04_stat_amplitudes/final_scores.csv")
+write.csv(scores, file = "results/04_stat_amplitudes/final_scores.csv")
 
 ########### Factorwise-statistical analysis ###########
 ##### Factor P2 #####
 
 # Descriptive Statistics
-describeBy(P2 ~ group + cond, data = scores[scores$chan == "Cz",], mat = TRUE, digits = 3)
+describeBy(P2 ~ cond + group, data = scores[scores$chan == "Cz",], mat = TRUE, digits = 3)
 
 # Frequentist ANOVA
-aov_ez(data = scores[scores$chan == "Cz",], dv = "P2", id = "subj", between = "group", within = "cond", type = 3)
+fit <- aov_ez(data = scores[scores$chan == "Cz",], dv = "P2", id = "subj", between = "group", within = "cond", type = 3)
+fit
 
 # Bayes ANOVA
-res = anovaBF(P2 ~ (group * cond) + subj, data = scores, 
+res = anovaBF(P2 ~ (cond * group) + subj, data = scores, 
               whichRandom = "subj", 
               whichModels = "withmain", 
               rscaleRandom = "nuisance", 
@@ -111,16 +112,34 @@ ttestBF(scores[scores$group == "ch" & scores$chan == "Cz" & scores$cond == "nov"
         scores[scores$group == "ch" & scores$chan == "Cz" & scores$cond == "sta",]$P2, 
         paired = TRUE)
 
+## Plot interaction
+ggplot(scores[scores$chan == "Cz",], aes(x = group, y = P2, color = cond)) +
+        geom_violin(position = position_dodge(0.8)) +
+        geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
+        scale_y_reverse() +
+        labs(x = "Age group", y = "Amplitude [µV]", color = "Sound type")
+
+scores_diff = scores[scores$cond == "nov",]
+scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
+scores_diff[, "cond"] = "nov-sta"
+
+ggplot(scores_diff[scores_diff$chan == "Cz",], aes(color = group, y = P2, x = group)) +
+        geom_violin(position = position_dodge(0.8)) +
+        geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
+        scale_y_reverse() +
+        labs(x = "Age group", y = "Nov - Sta difference amplitude [µV]", color = "Age group")
+
 ##### Factor eP3a #####
 
 # Descriptive Statistics
-describeBy(eP3a ~ group + cond, data = scores[scores$chan == "Cz",], mat = TRUE, digits = 3)
+fit <- describeBy(eP3a ~ cond + group, data = scores[scores$chan == "Cz",], mat = TRUE, digits = 3)
+fit 
 
 # Frequentist ANOVA
 aov_ez(data = scores[scores$chan == "Cz",], dv = "eP3a", id = "subj", between = "group", within = "cond", type = 3)
 
 # Bayes ANOVA
-res = anovaBF(eP3a ~ (group * cond) + subj, data = scores, 
+res = anovaBF(eP3a ~ (cond * group) + subj, data = scores, 
               whichRandom = "subj", 
               whichModels = "withmain", 
               rscaleRandom = "nuisance", 
@@ -153,17 +172,36 @@ ttestBF(scores[scores$group == "ch" & scores$chan == "Cz" & scores$cond == "nov"
         scores[scores$group == "ch" & scores$chan == "Cz" & scores$cond == "sta",]$eP3a, 
         paired = TRUE)
 
+
+## Plot interaction
+ggplot(scores[scores$chan == "Cz",], aes(x = group, y = eP3a, color = cond)) +
+        geom_violin(position = position_dodge(0.8)) +
+        geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
+        scale_y_reverse() +
+        labs(x = "Age group", y = "Amplitude [µV]", color = "Sound type")
+
+scores_diff = scores[scores$cond == "nov",]
+scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
+scores_diff[, "cond"] = "nov-sta"
+
+ggplot(scores_diff[scores_diff$chan == "Cz",], aes(color = group, y = eP3a, x = group)) +
+        geom_violin(position = position_dodge(0.8)) +
+        geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
+        scale_y_reverse() +
+        labs(x = "Age group", y = "Nov - Sta difference amplitude [µV]", color = "Age group")
+
+
 ##### Factor lP3a #####
 
 # Descriptive Statistics
-describeBy(lP3a ~ group + cond, data = scores[scores$chan == "Fz",], mat = TRUE, digits = 3)
+describeBy(lP3a ~ cond + group, data = scores[scores$chan == "Fz",], mat = TRUE, digits = 3)
 
 # Frequentist ANOVA
 fit <- aov_ez(data = scores[scores$chan == "Fz",], dv = "lP3a", id = "subj", between = "group", within = "cond", type = 3)
 fit
 
 # Bayes ANOVA
-res = anovaBF(lP3a ~ (group * cond) + subj, data = scores, 
+res = anovaBF(lP3a ~ (cond * group) + subj, data = scores, 
               whichRandom = "subj", 
               whichModels = "withmain", 
               rscaleRandom = "nuisance", 
@@ -196,16 +234,35 @@ ttestBF(scores[scores$group == "ch" & scores$chan == "Fz" & scores$cond == "nov"
         scores[scores$group == "ch" & scores$chan == "Fz" & scores$cond == "sta",]$lP3a, 
         paired = TRUE)
 
+## Plot interaction
+ggplot(scores[scores$chan == "Fz",], aes(x = group, y = lP3a, color = cond)) +
+        geom_violin(position = position_dodge(0.8)) +
+        geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
+        scale_y_reverse() +
+        labs(x = "Age group", y = "Amplitude [µV]", color = "Sound type")
+
+scores_diff = scores[scores$cond == "nov",]
+scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
+scores_diff[, "cond"] = "nov-sta"
+
+ggplot(scores_diff[scores_diff$chan == "Fz",], aes(color = group, y = lP3a, x = group)) +
+        geom_violin(position = position_dodge(0.8)) +
+        geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
+        scale_y_reverse() +
+        labs(x = "Age group", y = "Nov - Sta difference amplitude [µV]", color = "Age group")
+
+
 ##### Factor LDN #####
 
 # Descriptive Statistics
-describeBy(P2 ~ group + cond, data = scores[scores$chan == "F4",], mat = TRUE, digits = 3)
+describeBy(LDN ~ cond + group, data = scores[scores$chan == "F4",], mat = TRUE, digits = 3)
 
 # Frequentist ANOVA
- aov_ez(data = scores[scores$chan == "F4",], dv = "P2", id = "subj", between = "group", within = "cond", type = 3)
+fit <- aov_ez(data = scores[scores$chan == "F4",], dv = "LDN", id = "subj", between = "group", within = "cond", type = 3)
+fit
 
 # Bayes ANOVA
-res = anovaBF(P2 ~ (group * cond) + subj, data = scores, 
+res = anovaBF(LDN ~ (cond * group) + subj, data = scores, 
               whichRandom = "subj", 
               whichModels = "withmain", 
               rscaleRandom = "nuisance", 
@@ -216,28 +273,44 @@ bayesfactor_inclusion(res, match_models = TRUE)
 # Frequentist Pairwise comparisons:
 #  nov vs. sta 
 #  for Adults
-t.test(scores[scores$group == "ad" & scores$chan == "F4" & scores$cond == "nov",]$P2, 
-       scores[scores$group == "ad" & scores$chan == "F4" & scores$cond == "sta",]$P2, 
+t.test(scores[scores$group == "ad" & scores$chan == "F4" & scores$cond == "nov",]$LDN, 
+       scores[scores$group == "ad" & scores$chan == "F4" & scores$cond == "sta",]$LDN, 
        paired = TRUE)
 
 #  for Children
-t.test(scores[scores$group == "ch" & scores$chan == "F4" & scores$cond == "nov",]$P2, 
-       scores[scores$group == "ch" & scores$chan == "F4" & scores$cond == "sta",]$P2, 
+t.test(scores[scores$group == "ch" & scores$chan == "F4" & scores$cond == "nov",]$LDN, 
+       scores[scores$group == "ch" & scores$chan == "F4" & scores$cond == "sta",]$LDN, 
        paired = TRUE)
 
 
-# Bayesian   Pairwise comparisons:
+# Bayesian Pairwise comparisons:
 #  nov vs. sta 
 #  for Adults
-ttestBF(scores[scores$group == "ad" & scores$chan == "F4" & scores$cond == "nov",]$P2, 
-        scores[scores$group == "ad" & scores$chan == "F4" & scores$cond == "sta",]$P2, 
+ttestBF(scores[scores$group == "ad" & scores$chan == "F4" & scores$cond == "nov",]$LDN, 
+        scores[scores$group == "ad" & scores$chan == "F4" & scores$cond == "sta",]$LDN, 
         paired = TRUE)
 
 #  for Children
-ttestBF(scores[scores$group == "ch" & scores$chan == "F4" & scores$cond == "nov",]$P2, 
-        scores[scores$group == "ch" & scores$chan == "F4" & scores$cond == "sta",]$P2, 
+ttestBF(scores[scores$group == "ch" & scores$chan == "F4" & scores$cond == "nov",]$LDN, 
+        scores[scores$group == "ch" & scores$chan == "F4" & scores$cond == "sta",]$LDN, 
         paired = TRUE)
 
+## Plot interaction
+ggplot(scores[scores$chan == "F4",], aes(x = group, y = LDN, color = cond)) +
+        geom_violin(position = position_dodge(0.8)) +
+        geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
+        scale_y_reverse() +
+        labs(x = "Age group", y = "Amplitude [µV]", color = "Sound type")
+
+scores_diff = scores[scores$cond == "nov",]
+scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
+scores_diff[, "cond"] = "nov-sta"
+
+ggplot(scores_diff[scores_diff$chan == "F4",], aes(color = group, y = LDN, x = group)) +
+        geom_violin(position = position_dodge(0.8)) +
+        geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
+        scale_y_reverse() +
+        labs(x = "Age group", y = "Nov - Sta difference amplitude [µV]", color = "Age group")
 
 
 

@@ -99,9 +99,13 @@ indLatEst <- lapply(jackknifeFits, FUN = function(iFit){
   # convert indices to seconds
   lat <- (out["latIdx",] - 1) / srate + xmin
   # Estimate individual latencies; Smulders, 2010, eq. (1)
+  # Smulders, F. T. Y. (2010). Simplifying jackknifing of ERPs and getting more out of it: 
+  # Retrieving estimates of participants’ latencies. 
+  # In Psychophysiology (Vol. 47, Issue 2, pp. 387–392). 
+  # https://doi.org/10.1111/j.1469-8986.2009.00934.x
   indLat <- N * mean(lat) - (N - 1) * lat
   
-  # for a more generea explanation of the underlying mathematics, see, e.g.,
+  # for a more general explanation of the underlying mathematics, see, e.g.,
   # Chapter 10 in:
   # Efron, B., & Hastie, T. (2016). 
   # Computer age statistical inference: Algorithms, evidence, and data science. 
@@ -158,7 +162,7 @@ indLatEst[[1]]$indLat
 indLatEst[[1]]$diagPlot
 # a data frame with all subsample loadings 
 indLatEst[[1]]$loadings
-# note that participant note the participant who was EXCLUDED
+# note that participant refers to the participant who was EXCLUDED
 # in that specific jackknife subsample
 
 ###############

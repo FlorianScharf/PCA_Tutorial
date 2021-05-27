@@ -187,7 +187,7 @@ allTopos$nov
 allTopos$`nov - sta`
 
 # Combine the time course plot and the topography plots into a single eps-file
-cairo_ps(filename = paste0("results/03b_topoplot_selectFactor/topoplot_", iFactor,".eps"),
+cairo_ps(filename = paste0("results/03b_topoplot_selectFactor/topoplot_", iFactor,".pdf"),
            width = 14, height = 4)
 
     grid.arrange(time_course,
@@ -251,7 +251,7 @@ gavr_plot_ad
 gavr_plot_ch
 
 
-cairo_ps(filename = paste0("results/03b_topoplot_selectFactor/Grand_averages.eps"),
+cairo_pdf(filename = paste0("results/03b_topoplot_selectFactor/Grand_averages.pdf"),
          width = 10, height = 4)
 
 grid.arrange(gavr_plot_ch,
