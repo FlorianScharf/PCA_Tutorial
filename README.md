@@ -8,7 +8,7 @@ The repository is structured as follows:
 - The subdirectories in "results" contain the output files of the respective script.
 - All scripts with prefix "99" contain the code for custom functions which are needed in the main scripts. 
 
-<sup>1</sup> <small>Note: The epochs in the set-files are participant averages, **not** trials. We use the electrode positions from these files to make plotting the factor tropographies easier. See *03b_topoplot_allFactors.R* for further details.</small> 
+<sub><sup>1</sup> Note: The epochs in the set-files are participant averages, **not** trials. We use the electrode positions from these files to make plotting the factor tropographies easier. See *03b_topoplot_allFactors.R* for further details.</sub> 
 
 To use the code, please follow these steps:
 1. Make sure that current versions of R (https://cran.r-project.org) and RStudio (https://www.rstudio.com) are installed 
