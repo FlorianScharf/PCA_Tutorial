@@ -74,7 +74,7 @@ for (iFile in c("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",
     theme_classic() +
     scale_color_manual(values = factorColors) 
   
-  ggsave(paste0("results/03a_factor_inspection/rotfit_", efaFit$group, efaFit$factors, "_geomin0.01.eps"), device = "eps",
+  ggsave(paste0("results/03a_factor_inspection/rotfit_", efaFit$group, efaFit$factors, "_geomin0.01.pdf"), device = "pdf",
          width = 6, height = 3.5) 
 }
 
