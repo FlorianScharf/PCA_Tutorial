@@ -112,7 +112,7 @@ rownames(Rloadings) <- rownames(Rtopo_sta) <- rownames(Rtopo_nov) <- paste0("adF
 colnames(Rloadings) <- colnames(Rtopo_sta) <- colnames(Rtopo_nov) <- paste0("chFA_", 1:ncol(Rloadings))
 
 #### CONVENIENCE FUNCTIONS
-source("99_inspection_tools.R")
+source("tools/inspection_tools.R")
 
 # In these matrices, the rows still represent Factors from the adult EFA
 # but the similarities in the columns were sorted

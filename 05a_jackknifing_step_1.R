@@ -58,8 +58,8 @@ for (iGroup in groups){
     # as the number of random starts to prevent suboptimal results due to 
     # local optima or non-convergence in single samples.
     
-    source("99_myFA.R")
-    source("99_geominQ_multstart.R")
+    source("tools/myFA.R")
+    source("tools/geominQ_multstart.R")
     
     data = as.matrix(erpdata[erpdata$group == iGroup & erpdata$subj != subj, -c(1:4)])
     

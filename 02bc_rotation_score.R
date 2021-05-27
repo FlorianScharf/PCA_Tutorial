@@ -10,7 +10,7 @@ if(!require(GPArotation)) install.packages("GPArotation")
 ## Load necessary packages
 library(GPArotation)
 library(psych)
-source("99_geominQ_multstart.R") # load custom rotation function
+source("tools/geominQ_multstart.R") # load custom rotation function
 
 ## Load data
 # Load the results file from the previous script.

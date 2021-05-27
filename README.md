@@ -3,6 +3,7 @@
 
 The repository is structured as follows:
 - The main scripts "01*.R" to "05*.R" conduct the EFA-based ERP analysis step by step as explained in the article.
+- "tools" contains some custom functions which are called in the main scripts
 - "data" contains the participant average data after pre-processing for both groups and conditions as MATLAB files.
 - The subdirectories in "results" contain the output files of the respective script.
 - All scripts with prefix "99" contain the code for custom functions which are needed in the main scripts. 

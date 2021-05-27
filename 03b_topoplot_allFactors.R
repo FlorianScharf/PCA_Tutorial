@@ -27,7 +27,7 @@ library(eegUtils)
 library(R.matlab)
 
 ## Load some convinience functions for data handling
-source("99_topoplot_functions.R")
+source("tools/topoplot_functions.R")
 
 ###### Data preparations ########
 
@@ -111,7 +111,7 @@ allPlots <- lapply(c("ad", "ch"), function(iGroup){
     ### The following code restructures the extracted information 
     # so that it fits the requirements of ggplot, most importantly,
     # the data are reshaped into long format.
-    # The details can be found in 99_topoplot_functions.
+    # The details can be found in tools/topoplot_functions.
     
     # Get grand average to long format for plotting
     iGAVR <- gavr2long(allGAVRS, iEl = iEl, iGroup = iGroup, times = times)

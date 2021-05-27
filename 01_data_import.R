@@ -2,8 +2,7 @@
 # Import data from MATLAB and save as Rdata
 # Author: Florian Scharf, florian.scharf@uni-muenster.de and Andreas Widmann, widmann@uni-leipzig.de
 # Copyright (c) 2021 Florian Scharf, University of Münster and Andreas Widmann, University of Leipzig
-# Author: Andreas Widmann, widmann@uni-leipzig.de
-# Copyright (c) 2021 Andreas Widmann, University of Leipzig
+
 
 ## Empty workspace to start with a clean plate.
 rm(list=ls())

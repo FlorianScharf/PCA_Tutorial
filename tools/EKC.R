@@ -2,15 +2,7 @@ EKC <- function (R, N = NA, use = c("pairwise.complete.obs", "all.obs",
                              "complete.obs", "everything", "na.or.complete"), cor_method = c("pearson", 
                                                                                              "spearman", "kendall")) 
 {
- 
-  # Check if correlation matrix is positive definite, if it is not,
-  # smooth the matrix (cor.smooth throws a warning)
-  if (any(eigen(R, symmetric = TRUE, only.values = TRUE)$values <= .Machine$double.eps^.6)) {
-    
-    R <- psych::cor.smooth(R)
-    
-  }
-  
+
   p <- ncol(R)
   lambda <- eigen(R, symmetric = TRUE, only.values = TRUE)$values
   refs <- vector("double", p)

@@ -40,19 +40,8 @@ R = cor(age_group_data)
 
 ## Determine number of factors using 
 # This function is taken from the package EFAtools. 
-# Due to a bug in the original function, we use a custom implementation
-# which circumvents this bug. A future release of the package
-# should work as intended.
-# for details, see: https://github.com/mdsteiner/EFAtools/issues/61
-source('99_myEKC.R')
-
+source('tools/EKC.R')
 res_ekc = EKC(R, N = nrow(age_group_data))
-# A warning could be prompted indicating that the correlation matrix
-# was "smoothed". This makes it possible to compute the so-called
-# inverse of R. 
-# The warning does simply inform us that smoothing was done
-# it does *not* indicate an error or problem.
-# Details are provided here: https://personality-project.org/r/html/cor.smooth.html
 
 ## Save the resulting number of factors
 nFac = res_ekc$n_factors
@@ -117,7 +106,7 @@ lines(eigenRandData, col = "red")
 # is very slow for data sets as large as ours and it often results in irrelevant 
 # warnings about non-convergence of the fit index estimation. Otherwise, the
 # function is not changed.
-source("99_myFA.R")
+source("tools/fa_simplified.R")
 
 # The argument covar = TRUE is set in order to produce an unstandardized 
 # solution as intended.
