@@ -25,6 +25,9 @@ efaFit$loadings = efaFit$loadings / efaFit$varSD
 
 ## Use Geomin rotation with 30 random start values.
 # Please be aware that this function can take a while. 
+# This is a custom function which implements a procedure 
+# available from the package GPArotation. 
+# Please see tools/geominQ_mulstart for details
 rotFit <- geominQ_multstart(A = efaFit$loadings,  # unrotated loadings
                             delta = 0.01,     # rotation parameter (geomin epsilon)
                             # Note: We decided to name all parameters consistently with

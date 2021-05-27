@@ -13,27 +13,38 @@ geominQ_multstart = function(A, normalize = FALSE, delta = 0.01, Tmat = diag(nco
                              maxit = 10000, eps = 1e-5, method = "geomin"){
   
   
-  if (rand.start){
+  if (rand.start){ # if you are supposed to use random starts
     
+    # Use as many starting values as indicated
     mrRot <- lapply(1:start.values, function(iStart){
+      # Generate a random starting rotation
       Tmat <- Random.Start(ncol(A))
+      # Tell the user where you are in the process
       print(paste0("Random start number: ", iStart))
+      
+      # Apply gradient projection - parameters are passed from the function 
       rotFit <- GPFoblq(A = A, method = method, normalize = normalize, Tmat = Tmat,
                            eps = eps, maxit = maxit, methodArgs = list(delta = delta))
-      
+      # Remember the results in each round
       list(criterion = ifelse(is.null(rotFit$Table), NA, min(rotFit$Table[,2])), rotFit = rotFit)
     })
     
+    # Which of the random starting values resulted in the best value
+    # of the criterion?
     bestStart <- which.min(lapply(mrRot, function(x) x$criterion))
-    bestStart <- ifelse(length(bestStart) == 0, 1, bestStart)
+    
+    # If bestStart is empty, notify the user about it.
+    if (length(bestStart) == 0) stop("No best solution found, perhaps no rotation converged? Try increasing maxit or reducing eps!")
+    
+    # return the best rotation results as the result
     rotFit <- mrRot[[bestStart]]$rotFit
     
   }
-  else {
-    rotFit = GPFoblq(A = A, method = method, normalize = normalize, Tmat = Tmat,
+  else { # else and rotate: start from a generic starting matrix
+    # Apply gradient projection - parameters are passed from the function 
+     rotFit = GPFoblq(A = A, method = method, normalize = normalize, Tmat = Tmat,
                         eps = eps, maxit = maxit, methodArgs = list(delta = delta))
   }
   
-  rotFit$Th <- t(solve(rotFit$Th))
   return(rotFit)
 }
