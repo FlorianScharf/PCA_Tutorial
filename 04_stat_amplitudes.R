@@ -64,6 +64,11 @@ names(chEFA$scores)[highlighted_FA_ch] <- c("LDN", "P2", "lP3a", "eP3a")
 # Create a new data set containing both groups and only the relevant data
 scores = rbind(chEFA$scores[, c("group", "cond", "subj", "chan", "P2", "eP3a", "lP3a", "LDN")], adEFA$scores[, c("group", "cond", "subj", "chan", "P2", "eP3a", "lP3a", "LDN")])
 
+# Compute difference scores for plotting purposes
+scores_diff = scores[scores$cond == "nov",]
+scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
+scores_diff[, "cond"] = "nov-sta"
+
 # Export final file, if you prefer, you can analyze the scores in a different
 # software such as JASP or SPSS.
 write.csv(scores, file = "results/04_stat_amplitudes/final_scores.csv")
@@ -118,10 +123,6 @@ ggplot(scores[scores$chan == "Cz",], aes(x = group, y = P2, color = cond)) +
         geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
         scale_y_reverse() +
         labs(x = "Age group", y = "Amplitude [µV]", color = "Sound type")
-
-scores_diff = scores[scores$cond == "nov",]
-scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
-scores_diff[, "cond"] = "nov-sta"
 
 ggplot(scores_diff[scores_diff$chan == "Cz",], aes(color = group, y = P2, x = group)) +
         geom_violin(position = position_dodge(0.8)) +
@@ -180,9 +181,6 @@ ggplot(scores[scores$chan == "Cz",], aes(x = group, y = eP3a, color = cond)) +
         scale_y_reverse() +
         labs(x = "Age group", y = "Amplitude [µV]", color = "Sound type")
 
-scores_diff = scores[scores$cond == "nov",]
-scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
-scores_diff[, "cond"] = "nov-sta"
 
 ggplot(scores_diff[scores_diff$chan == "Cz",], aes(color = group, y = eP3a, x = group)) +
         geom_violin(position = position_dodge(0.8)) +
@@ -241,10 +239,6 @@ ggplot(scores[scores$chan == "Fz",], aes(x = group, y = lP3a, color = cond)) +
         scale_y_reverse() +
         labs(x = "Age group", y = "Amplitude [µV]", color = "Sound type")
 
-scores_diff = scores[scores$cond == "nov",]
-scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
-scores_diff[, "cond"] = "nov-sta"
-
 ggplot(scores_diff[scores_diff$chan == "Fz",], aes(color = group, y = lP3a, x = group)) +
         geom_violin(position = position_dodge(0.8)) +
         geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
@@ -301,10 +295,6 @@ ggplot(scores[scores$chan == "F4",], aes(x = group, y = LDN, color = cond)) +
         geom_boxplot(width = 0.1, position = position_dodge(0.8)) +
         scale_y_reverse() +
         labs(x = "Age group", y = "Amplitude [µV]", color = "Sound type")
-
-scores_diff = scores[scores$cond == "nov",]
-scores_diff[, 5:8] = scores[scores$cond == "nov", 5:8] - scores[scores$cond == "sta", 5:8]
-scores_diff[, "cond"] = "nov-sta"
 
 ggplot(scores_diff[scores_diff$chan == "F4",], aes(color = group, y = LDN, x = group)) +
         geom_violin(position = position_dodge(0.8)) +

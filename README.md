@@ -10,7 +10,6 @@ The repository is structured as follows:
 - "tools" contains some custom functions which are called in the main scripts
 - "data" contains the participant average data after pre-processing for both groups and conditions as MATLAB files<sup>1</sup>. 
 - The subdirectories in "results" contain the output files of the respective script.
-- All scripts with prefix "99" contain the code for custom functions which are needed in the main scripts. 
 
 <sub><sup>1</sup> Note: The epochs in the set-files are participant averages, **not** trials. We use the electrode positions from these files to make plotting the factor tropographies easier. See *03b_topoplot_allFactors.R* for further details.</sub> 
 
