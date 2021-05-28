@@ -35,6 +35,8 @@ geominQ_multstart = function(A, normalize = FALSE, delta = 0.01, Tmat = diag(nco
     
     # If bestStart is empty, notify the user about it.
     if (length(bestStart) == 0) stop("No best solution found, perhaps no rotation converged? Try increasing maxit or reducing eps!")
+    # If the function received reasonable input, non-convergence is basically the only
+    # thing that can go wrong. 
     
     # return the best rotation results as the result
     rotFit <- mrRot[[bestStart]]$rotFit
