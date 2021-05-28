@@ -3,6 +3,10 @@
 # Author: Florian Scharf, florian.scharf@uni-muenster.de and Andreas Widmann, widmann@uni-leipzig.de
 # Copyright (c) 2021 Florian Scharf, University of Münster and Andreas Widmann, University of Leipzig
 
+# empty workspace
+rm(list=ls())
+
+
 ## Check if necessary packages are installed and if not
 # install them
 if(!require(ggplot2)) install.packages("ggplot2")

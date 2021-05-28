@@ -3,6 +3,10 @@
 # Author: Florian Scharf, florian.scharf@uni-muenster.de and Andreas Widmann, widmann@uni-leipzig.de
 # Copyright (c) 2021 Florian Scharf, University of Münster and Andreas Widmann, University of Leipzig
 
+# empty workspace
+rm(list=ls())
+
+
 ## Check if necessary packages are installed and if not
 # install them
 if(!require(ggplot2)) install.packages("ggplot2")
@@ -71,7 +75,7 @@ for (iFile in c("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",
     xlab("Time [ms]") +
     ylab("Unstandardized Loadings") +
     labs(title = ifelse(efaFit$group == "ad", "Adult EFA Geomin (0.01)", "Child EFA Geomin (0.01)")) + 
-    theme_classic() +
+    # theme_classic() +
     scale_color_manual(values = factorColors) 
   
   ggsave(paste0("results/03a_factor_inspection/rotfit_", efaFit$group, efaFit$factors, "_geomin0.01.pdf"), device = "pdf",

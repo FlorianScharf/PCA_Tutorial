@@ -3,6 +3,9 @@
 # Author: Florian Scharf, florian.scharf@uni-muenster.de and Andreas Widmann, widmann@uni-leipzig.de
 # Copyright (c) 2021 Florian Scharf, University of Münster and Andreas Widmann, University of Leipzig
 
+# empty workspace
+rm(list=ls())
+
 ## Check if necessary packages are installed and if not
 # install them
 if(!require(GPArotation)) install.packages("GPArotation")
@@ -27,7 +30,7 @@ efaFit$loadings = efaFit$loadings / efaFit$varSD
 # Please be aware that this function can take a while. 
 # This is a custom function which implements a procedure 
 # available from the package GPArotation. 
-# Please see tools/geominQ_mulstart for details
+# Please see tools/geominQ_multstart.R for details
 rotFit <- geominQ_multstart(A = efaFit$loadings,  # unrotated loadings
                             delta = 0.01,     # rotation parameter (geomin epsilon)
                             # Note: We decided to name all parameters consistently with
@@ -58,7 +61,13 @@ rotFit <- geominQ_multstart(A = efaFit$loadings,  # unrotated loadings
 # and does not require random starts (but it tends to conflate factors
 # earlier than Geomin):
 
-# rotFit <- Promax(efaFit$loadings, normalize = TRUE)
+# We set the rotation parameter to 3, mimicking the behavior of Dien's ERP
+# PCA Toolkit and the commercial software SAS, 
+# because this value is well-justified by simulation studies.
+# Choosing a value of 2 will allow for solutions with higher temporal overlap,
+# choosing higher values will increase the preference for too simple structures.
+
+# rotFit <- Promax(efaFit$loadings, m = 3, normalize = TRUE)
 
 ## Transfer variances and standard deviations into the new fit object.
 rotFit$varSD = efaFit$varSD

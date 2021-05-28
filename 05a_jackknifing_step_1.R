@@ -7,6 +7,9 @@
 #### This script runs for several hours on typical hardware. Do only run when 
 #### you are prepared to wait for the results this long.
 
+# empty workspace
+rm(list=ls())
+
 ## Load necessary packages
 if(!require(foreach)) install.packages("foreach")
 if(!require(doParallel)) install.packages("doParallel")
@@ -28,7 +31,7 @@ library(GPArotation)
 detectCores(logical = TRUE)
 
 # Set number of cores
-cores <-  32 # change manually
+cores <-  6 # change manually
 
 # Prepare parallel environment
 cl <- makeCluster(cores[1], outfile = "")
@@ -58,7 +61,7 @@ for (iGroup in groups){
     # as the number of random starts to prevent suboptimal results due to 
     # local optima or non-convergence in single samples.
     
-    source("tools/myFA.R")
+    source("tools/fa_simplified.R")
     source("tools/geominQ_multstart.R")
     
     data = as.matrix(erpdata[erpdata$group == iGroup & erpdata$subj != subj, -c(1:4)])
@@ -75,8 +78,8 @@ for (iGroup in groups){
                                 # Note: We decided to name all parameters consistently with
                                 # the GPArotation package despite its deviation from the
                                 # conventional naming epsilon for this parameter.
-                                normalize = F,     # No additional standardization
-                                rand.start = T,    # Use multiple random starts
+                                normalize = FALSE,     # No additional standardization
+                                rand.start = TRUE,    # Use multiple random starts
                                 start.values = 100, # Number of random starts
                                 maxit = 500000,     # Number of iterations 
                                 # Note: After this number of iterations, the
