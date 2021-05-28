@@ -150,7 +150,7 @@ allPlots <- lapply(c("ad", "ch"), function(iGroup){
       #scale_y_reverse() +  
       labs(x = "Time [s]" , y = "Voltage [µV]", 
            title = paste0(ifelse(iGroup == "ch", "Children", "Adults"), 
-                          ", El: ", iEl,
+                          ", Electrode: ", iEl,
                           ", Factor: ", iFactor,
                            ",\nPeak Latency: ", sprintf("%.3f",times[which.max(iEFA$rotFit$loadings[, iFactor])]), " s"),
            color = "Condition") +
