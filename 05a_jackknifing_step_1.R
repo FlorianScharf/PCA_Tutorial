@@ -4,8 +4,11 @@
 # Copyright (c) 2021 Florian Scharf, University of Münster and Andreas Widmann, University of Leipzig
 
 #### NOTE:
-#### This script runs for several hours on typical hardware. Do only run when 
-#### you are prepared to wait for the results this long.
+#### This script runs for several hours on typical hardware.
+#### One weaker hardware, it may even run several days!
+#### Do only run when you are prepared to wait for the results this long.
+#### We provided the results files (see results folder) for this step as well, 
+#### so you can inspect the following step without running this script.
 
 # empty workspace
 rm(list=ls())
