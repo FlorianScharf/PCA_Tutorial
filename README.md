@@ -11,6 +11,8 @@ The repository is structured as follows:
 - The directory "data" contains the participant average data after pre-processing for both groups and conditions as MATLAB files<sup>1</sup>. 
 - The subdirectories in "results" contain the output files of the respective script.
 
+Readers who want to use MATLAB for their analyses, may want to have look at Joseph Dien's ERP PCA Toolkit (https://sourceforge.net/projects/erppcatoolkit/) which provides all functionality to replicate the analyses in MATLAB. We provided a MATLAB implementation of the Empirical Kaiser Criterion in the directory "Tools".
+
 <sub><sup>1</sup> Note: The epochs in the set-files are participant averages, **not** trials. We use the electrode positions from these files to make plotting the factor tropographies easier. See *03b_topoplot_allFactors.R* for further details.</sub> 
 
 ## How to get started
