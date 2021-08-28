@@ -27,3 +27,7 @@ To use the code, please follow these steps:
 In case you encounter bugs or unexpected behavior, please, open an issue or report via mail to 
 
 florian.scharf dot uni-muenster dot de 
+
+
+## Transparency note on the data set
+For the sake of completeness, we note that the dataset is not equivalent to Bonmassar et al. (2020) because the pre-processing differed in some aspects. Specifically, the following details differed: (1) We did not reject data due to artifacts in the co-registered pupil data, (2) the data were filtered with a 48 Hz low-pass filter (length: 414 points), (3) bad channels were excluded and interpolated when they exceeded a robust z-score of 3 of the robust standard deviation of the channels (Bigdely-Shamlo et al., 2015), (4) epochs exceeding amplitude differences of 750 µV (based on 0.1 Hz high-pass and low-pass filtered data) were excluded before ICA to remove non-stereotypical artifacts, and (5) the ICA was re-computed using AMICA (Delorme et al., 2012) on the 1 Hz high-pass filtered data without baseline correction (Klug & Gramann, 2020). ICA components classification was redone (but with identical constraints).
