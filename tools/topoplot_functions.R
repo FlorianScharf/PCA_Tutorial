@@ -19,9 +19,9 @@ gavr2long <- function(allGAVRs, iEl, iGroup, times){
 }
 
 
-makeERPest  <- function(iScores, iEFA, iFactor, iEl, times){
+makeERPest  <- function(iScores, iPCA, iFactor, iEl, times){
   iERP_est <- t(apply(iScores, MARGIN = 1, function(x){
-    iEFA$rotFit$loadings[, iFactor] * as.numeric(x[iFactor])
+    iPCA$rotFit$loadings[, iFactor] * as.numeric(x[iFactor])
   }))
   
   iERP_est <- cbind(iScores[,1:2], iERP_est)
@@ -41,9 +41,9 @@ makeERPest  <- function(iScores, iEFA, iFactor, iEl, times){
 }
 
 
-efa2eeg <- function(iEFA, allAVRs, iGroup, iFactor){
+pca2eeg <- function(iPCA, allAVRs, iGroup, iFactor){
   signals <- lapply(c("sta", "nov"), function(iCond) {
-    iSignals <- matrix(iEFA$average_scores[iEFA$average_scores$cond == iCond, iFactor] * max(iEFA$rotFit$loadings[,iFactor]),
+    iSignals <- matrix(iPCA$average_scores[iPCA$average_scores$cond == iCond, iFactor] * max(iPCA$rotFit$loadings[,iFactor]),
                        ncol = dim(allAVRs[[iGroup]][[iCond]]$signals)[2], 
                        nrow = dim(allAVRs[[iGroup]][[iCond]]$signals)[1], 
                        byrow = TRUE)

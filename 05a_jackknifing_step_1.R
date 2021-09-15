@@ -1,5 +1,5 @@
 ############### STEP 5a: Jackknife resampling ###############
-# This script conducts the jackknife resampling and safes the rotated EFA results for all samples.
+# This script conducts the jackknife resampling and safes the rotated pca results for all samples.
 # Author: Florian Scharf, florian.scharf@uni-muenster.de and Andreas Widmann, widmann@uni-leipzig.de
 # Copyright (c) 2021 Florian Scharf, University of Münster and Andreas Widmann, University of Leipzig
 
@@ -23,7 +23,7 @@ library(GPArotation)
 
 ## Setup parallel environment
 # The resampling is conducted in a parallel environment
-# each single core estimates the EFA model for a different jackknife sample.
+# each single core estimates the pca model for a different jackknife sample.
 # The higher the number of cores the faster this will be.
 # We recommend to use as many cores as your computer has available minus one 
 # to prevent overload. If you use a computing cluster with many cores:
@@ -47,7 +47,7 @@ load("results/01_data_import/erpdata.Rdata")
 groups <- c("ad", "ch") 
 
 # How many factors should be extracted per group?
-# This should match the number of factors from the EFA over all participants.
+# This should match the number of factors from the pca over all participants.
 nFac <- c(23,21)
 
 # go through both groups
@@ -58,7 +58,7 @@ for (iGroup in groups){
   
   rotFitAll = foreach(subj = levels(droplevels(erpdata[erpdata$group == iGroup,]$subj)), .combine=cbind, .packages = c("psych", "GPArotation")) %dopar% {
     
-    # The following code essentially replicates the estimation of the EFA model 
+    # The following code essentially replicates the estimation of the pca model 
     # in step 2 for every jackknife subsample. 
     # We only increased the number of maximum iterations for the rotation as well
     # as the number of random starts to prevent suboptimal results due to 
@@ -73,10 +73,10 @@ for (iGroup in groups){
     Var = diag(S)
     varSD = sqrt(Var)
     
-    efaFit = fa_simplified(data, nfactors = iNfac, rotate = "none", covar = TRUE)
-    efaFit$loadings = efaFit$loadings / varSD # as in ERP PCA Toolkit
+    pcaFit = fa_simplified(data, nfactors = iNfac, rotate = "none", covar = TRUE)
+    pcaFit$loadings = pcaFit$loadings / varSD # as in ERP PCA Toolkit
     
-    rotFit <- geominQ_multstart(A = efaFit$loadings,  # unrotated loadings
+    rotFit <- geominQ_multstart(A = pcaFit$loadings,  # unrotated loadings
                                 delta = 0.01,     # rotation parameter (geomin epsilon)
                                 # Note: We decided to name all parameters consistently with
                                 # the GPArotation package despite its deviation from the
@@ -107,7 +107,7 @@ for (iGroup in groups){
     # Compute unstandardized loadings
     L <- rotFit$loadings * rotFit$varSD
     # Compute proportion of variance explained by each factor
-    facVar <- diag(rotFit$Phi %*% t(L) %*% (L)) / sum(diag(efaFit$S)) 
+    facVar <- diag(rotFit$Phi %*% t(L) %*% (L)) / sum(diag(pcaFit$S)) 
     
     # Return indices of the factors ordered by the variance explained
     alignment = order(facVar, decreasing = TRUE)

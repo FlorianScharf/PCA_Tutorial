@@ -65,7 +65,7 @@ for (iFile in c("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",
     stop("Unknown group.")
   }
   
-  factorColors = colorRampPalette(brewer.pal(12, "Paired"))(efaFit$factors)
+  factorColors = colorRampPalette(brewer.pal(12, "Paired"))(pcaFit$factors)
   
   ggplot(data = loadings, aes(x = lat, y = value, color = Factor, size = highlight)) +
     geom_line() + 
@@ -74,42 +74,42 @@ for (iFile in c("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",
     ylim(-1,5) + 
     xlab("Time [ms]") +
     ylab("Unstandardized Loadings") +
-    labs(title = ifelse(efaFit$group == "ad", "Adult EFA Geomin (0.01)", "Child EFA Geomin (0.01)")) + 
+    labs(title = ifelse(pcaFit$group == "ad", "Adult PCA Geomin (0.01)", "Child PCA Geomin (0.01)")) + 
     # theme_classic() +
     scale_color_manual(values = factorColors) 
   
-  ggsave(paste0("results/03a_factor_inspection/rotfit_", efaFit$group, efaFit$factors, "_geomin0.01.pdf"), device = "pdf",
+  ggsave(paste0("results/03a_factor_inspection/rotfit_", pcaFit$group, pcaFit$factors, "_geomin0.01.pdf"), device = "pdf",
          width = 6, height = 3.5) 
 }
 
 ################  Match factors #################
 
-## load both EFA results to match factors 
+## load both PCA results to match factors 
 load("results/02bc_rotation_score/rotfit_ch21_geomin0.01.Rdata")
-rotFit -> rotFit_childEFA
-scores -> scores_childEFA
+rotFit -> rotFit_childPCA
+scores -> scores_childPCA
 load("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata")
-scores -> scores_adultEFA
-rotFit -> rotFit_adultEFA
+scores -> scores_adultPCA
+rotFit -> rotFit_adultPCA
 
 ## compute average factor scores across participants
-avr_scr_adEFA  <- aggregate(. ~ cond + chan, data = scores_adultEFA, FUN = mean)
-avr_scr_chEFA  <- aggregate(. ~ cond + chan, data = scores_childEFA, FUN = mean)
+avr_scr_adPCA  <- aggregate(. ~ cond + chan, data = scores_adultPCA, FUN = mean)
+avr_scr_chPCA  <- aggregate(. ~ cond + chan, data = scores_childPCA, FUN = mean)
 
 ####### Match time courses and topographies #######
 ## Correlation of factor loadings
-# The rows are factors from the adultEFA, the columns from the childEFA.
+# The rows are factors from the adultPCA, the columns from the childPCA.
 # Higher correlations indicate higher similarity.
-Rloadings <- cor(rotFit_adultEFA$loadings, rotFit_childEFA$loadings)
+Rloadings <- cor(rotFit_adultPCA$loadings, rotFit_childPCA$loadings)
 
 ## Correlation of factor scores 
 # Note: The excluded columns contain index variables for electrode sites etc.
 # and need to be removed for the correlations to be meaningful.
-Rtopo_sta <- cor(avr_scr_adEFA[avr_scr_adEFA$cond == "sta",-c(1:4)],
-                 avr_scr_chEFA[avr_scr_chEFA$cond == "sta",-c(1:4)])
+Rtopo_sta <- cor(avr_scr_adPCA[avr_scr_adPCA$cond == "sta",-c(1:4)],
+                 avr_scr_chPCA[avr_scr_chPCA$cond == "sta",-c(1:4)])
 
-Rtopo_nov <- cor(avr_scr_adEFA[avr_scr_adEFA$cond == "nov",-c(1:4)],
-                 avr_scr_chEFA[avr_scr_chEFA$cond == "nov",-c(1:4)])
+Rtopo_nov <- cor(avr_scr_adPCA[avr_scr_adPCA$cond == "nov",-c(1:4)],
+                 avr_scr_chPCA[avr_scr_chPCA$cond == "nov",-c(1:4)])
 
 
 rownames(Rloadings) <- rownames(Rtopo_sta) <- rownames(Rtopo_nov) <- paste0("adFA", 1:nrow(Rloadings))
@@ -118,7 +118,7 @@ colnames(Rloadings) <- colnames(Rtopo_sta) <- colnames(Rtopo_nov) <- paste0("chF
 #### CONVENIENCE FUNCTIONS
 source("tools/inspection_tools.R")
 
-# In these matrices, the rows still represent Factors from the adult EFA
+# In these matrices, the rows still represent Factors from the adult PCA
 # but the similarities in the columns were sorted
 # and the respective factor was named.
 # Example:

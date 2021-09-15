@@ -41,24 +41,24 @@ load("results/01_data_import/erpdata.Rdata")
 ## Compute grand average across participants per group, channel and condition
 allGAVRS <- aggregate(. ~ cond + chan + group, data = erpdata, FUN = mean)
 
-## Load the data from both EFAs and put the results into separate objects
+## Load the data from both PCAs and put the results into separate objects
 load("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",  temp_env <- new.env())
-adEFA <- as.list.environment(temp_env)
+adPCA <- as.list.environment(temp_env)
 load("results/02bc_rotation_score/rotfit_ch21_geomin0.01.Rdata",  temp_env <- new.env())
-chEFA <- as.list.environment(temp_env)
+chPCA <- as.list.environment(temp_env)
 
 ## Rename the factor score matrix columns 
-colnames(adEFA$rotFit$loadings) <- paste0("F", 1:adEFA$efaFit$factors)
-colnames(chEFA$rotFit$loadings) <- paste0("F", 1:chEFA$efaFit$factors)
-colnames(adEFA$scores)[-c(1:4)] <- paste0("F", 1:adEFA$efaFit$factors)
-colnames(chEFA$scores)[-c(1:4)] <- paste0("F", 1:chEFA$efaFit$factors)
+colnames(adPCA$rotFit$loadings) <- paste0("F", 1:adPCA$pcaFit$factors)
+colnames(chPCA$rotFit$loadings) <- paste0("F", 1:chPCA$pcaFit$factors)
+colnames(adPCA$scores)[-c(1:4)] <- paste0("F", 1:adPCA$pcaFit$factors)
+colnames(chPCA$scores)[-c(1:4)] <- paste0("F", 1:chPCA$pcaFit$factors)
 
 
 ## average factor score per condition and channel
-adEFA$average_scores <- aggregate(. ~ cond + chan, data = adEFA$scores, FUN = mean)
-chEFA$average_scores <- aggregate(. ~ cond + chan, data = chEFA$scores, FUN = mean)
+adPCA$average_scores <- aggregate(. ~ cond + chan, data = adPCA$scores, FUN = mean)
+chPCA$average_scores <- aggregate(. ~ cond + chan, data = chPCA$scores, FUN = mean)
 
-allEFAs <- list(ad = adEFA, ch = chEFA)
+allPCAs <- list(ad = adPCA, ch = chPCA)
 
 ## load subject averages 
 # we will use these to have the channel locations in a format
@@ -80,14 +80,14 @@ allAVRs <- list(
 ### This generates the plots for all actors automatically and generates a PDF file.
 allPlots <- lapply(c("ad", "ch"), function(iGroup){
   
-  # Extract EFA results for the current group
-  iEFA <- allEFAs[[iGroup]]
+  # Extract PCA results for the current group
+  iPCA <- allPCAs[[iGroup]]
   
   # unstandardize rotated loadings
-  iEFA$rotFit$loadings <- iEFA$rotFit$loadings * iEFA$efaFit$varSD
+  iPCA$rotFit$loadings <- iPCA$rotFit$loadings * iPCA$pcaFit$varSD
   
   # compute maximal factor score to scale all factor topographies equally
-  allPeaks <- as.matrix(iEFA$average_scores[,-c(1:4)]) %*% diag(apply(iEFA$rotFit$loadings, 2, max))
+  allPeaks <- as.matrix(iPCA$average_scores[,-c(1:4)]) %*% diag(apply(iPCA$rotFit$loadings, 2, max))
   topoLimit <- ceiling(max(abs(allPeaks)))
 
   # compute ERP min and max for equal scaling across factors
@@ -95,21 +95,21 @@ allPlots <- lapply(c("ad", "ch"), function(iGroup){
                      floor(min(allGAVRS[allGAVRS$group == iGroup, -c(1:4)])))
                      
   
-  lapply(colnames(allEFAs[[iGroup]]$rotFit$loadings), function(iFactor){
+  lapply(colnames(allPCAs[[iGroup]]$rotFit$loadings), function(iFactor){
   
     # Choose an electrode to be plotted
     # here we automatically find maximum electrode (as is done by the ERP PCA Toolkit)
     # but it would be better to use a pre-selected electrode
     # based on the expected factor structure
-    iEl <- iEFA$average_scores$chan[which.max(abs(iEFA$average_scores[, iFactor]))]
+    iEl <- iPCA$average_scores$chan[which.max(abs(iPCA$average_scores[, iFactor]))]
 
   
 
     # find peak loading
-    iPeakLoad <- max(iEFA$rotFit$loadings[, iFactor]) 
+    iPeakLoad <- max(iPCA$rotFit$loadings[, iFactor]) 
     
     # Extract scores for current factor
-    iScores <- iEFA$average_scores[, c("cond", "chan", iFactor)]
+    iScores <- iPCA$average_scores[, c("cond", "chan", iFactor)]
     
     # Extract the time codes of the epoch
     times <- unique(allAVRs[[iGroup]][["sta"]]$timings$time)
@@ -127,7 +127,7 @@ allPlots <- lapply(c("ad", "ch"), function(iGroup){
     # Compute reconstructed ERP for each observation for this factor
     # and reshape it to long-format.
     iERPest <- makeERPest(iScores = iScores,
-                          iEFA = iEFA, 
+                          iPCA = iPCA, 
                           iFactor = iFactor, 
                           iEl = iEl,
                           times = times)
@@ -152,7 +152,7 @@ allPlots <- lapply(c("ad", "ch"), function(iGroup){
            title = paste0(ifelse(iGroup == "ch", "Children", "Adults"), 
                           ", Electrode: ", iEl,
                           ", Factor: ", iFactor,
-                           ",\nPeak Latency: ", sprintf("%.3f",times[which.max(iEFA$rotFit$loadings[, iFactor])]), " s"),
+                           ",\nPeak Latency: ", sprintf("%.3f",times[which.max(iPCA$rotFit$loadings[, iFactor])]), " s"),
            color = "Condition") +
       theme(plot.title = element_text(color="black", size=13, #hjust = 0.5, 
                                       face = "bold"),
@@ -169,7 +169,7 @@ allPlots <- lapply(c("ad", "ch"), function(iGroup){
     ## the eegUtils-package:
     # We replace the original data with the reconstructed data.
     
-    signals <- efa2eeg(iEFA = iEFA, 
+    signals <- pca2eeg(iPCA = iPCA, 
                        allAVRs = allAVRs,
                        iGroup = iGroup,
                        iFactor = iFactor)
@@ -222,7 +222,7 @@ names(allPlots) <- c("ad", "ch")
 # Determine order in which the plots are returned
 layout_matrix = matrix(1:24, nrow = 6, ncol = 4, TRUE)
 
-# adult EFA
+# adult PCA
 pages <- marrangeGrob(unlist(allPlots$ad, recursive = F), # put all adult plots in one long vector
              ncol = 4, # 4 columns (do not change!)
              nrow = 6, # 6 rows (change if you want fewer factors per page)
@@ -230,9 +230,9 @@ pages <- marrangeGrob(unlist(allPlots$ad, recursive = F), # put all adult plots 
              widths = c(3.2, 2, 2, 3), # widths of the columns
              layout_matrix = layout_matrix)
 # print on A3 (font size etc. fit better at this ratio)
-ggsave("results/03b_topoplot_allFactors/adEFA.pdf", pages, width = 1.4*210, height = 1.4*297, units = "mm")
+ggsave("results/03b_topoplot_allFactors/adPCA.pdf", pages, width = 1.4*210, height = 1.4*297, units = "mm")
 
-# child EFA
+# child PCA
 pages2 <- marrangeGrob(unlist(allPlots$ch, recursive = F), 
                       ncol = 4, 
                       nrow = 6,
@@ -240,7 +240,7 @@ pages2 <- marrangeGrob(unlist(allPlots$ch, recursive = F),
                       widths = c(3.2, 2, 2, 3), # widths of the columns
                       layout_matrix = layout_matrix)
 
-ggsave("results/03b_topoplot_allFactors/chEFA.pdf", pages2, width = 1.4*210, height = 1.4*297, units = "mm")
+ggsave("results/03b_topoplot_allFactors/chPCA.pdf", pages2, width = 1.4*210, height = 1.4*297, units = "mm")
 
 
 

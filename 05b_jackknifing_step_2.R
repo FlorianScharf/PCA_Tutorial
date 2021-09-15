@@ -22,7 +22,7 @@ pnts <- 500
 jackknifeFits <- c("results/05a_jackknifing_step_1/rotfit_ad23_jkpca.Rdata", 
                    "results/05a_jackknifing_step_1/rotfit_ch21_jkpca.Rdata")
 
-# Please list the respective total sample efa fits 
+# Please list the respective total sample pca fits 
 # attention: you need to list as many files here 
 # as you list jackknifeFits
 totalFits <- c("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata", 

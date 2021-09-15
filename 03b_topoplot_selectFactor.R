@@ -40,24 +40,24 @@ load("results/01_data_import/erpdata.Rdata")
 ## Compute grand average across participants per group, channel and condition
 allGAVRS <- aggregate(. ~ cond + chan + group, data = erpdata, FUN = mean)
 
-## Load the data from both EFAs and put the results into separate objects
+## Load the data from both PCAs and put the results into separate objects
 load("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",  temp_env <- new.env())
-adEFA <- as.list.environment(temp_env)
+adPCA <- as.list.environment(temp_env)
 load("results/02bc_rotation_score/rotfit_ch21_geomin0.01.Rdata",  temp_env <- new.env())
-chEFA <- as.list.environment(temp_env)
+chPCA <- as.list.environment(temp_env)
 
 ## Rename the factor score matrix columns 
-colnames(adEFA$rotFit$loadings) <- paste0("F", 1:adEFA$efaFit$factors)
-colnames(chEFA$rotFit$loadings) <- paste0("F", 1:chEFA$efaFit$factors)
-colnames(adEFA$scores)[-c(1:4)] <- paste0("F", 1:adEFA$efaFit$factors)
-colnames(chEFA$scores)[-c(1:4)] <- paste0("F", 1:chEFA$efaFit$factors)
+colnames(adPCA$rotFit$loadings) <- paste0("F", 1:adPCA$pcaFit$factors)
+colnames(chPCA$rotFit$loadings) <- paste0("F", 1:chPCA$pcaFit$factors)
+colnames(adPCA$scores)[-c(1:4)] <- paste0("F", 1:adPCA$pcaFit$factors)
+colnames(chPCA$scores)[-c(1:4)] <- paste0("F", 1:chPCA$pcaFit$factors)
 
 
 ## average factor score per condition and channel
-adEFA$average_scores <- aggregate(. ~ cond + chan, data = adEFA$scores, FUN = mean)
-chEFA$average_scores <- aggregate(. ~ cond + chan, data = chEFA$scores, FUN = mean)
+adPCA$average_scores <- aggregate(. ~ cond + chan, data = adPCA$scores, FUN = mean)
+chPCA$average_scores <- aggregate(. ~ cond + chan, data = chPCA$scores, FUN = mean)
 
-allEFAs <- list(ad = adEFA, ch = chEFA)
+allPCAs <- list(ad = adPCA, ch = chPCA)
 
 ## load subject averages 
 # we will use these to have the channel locations in a format
@@ -75,8 +75,8 @@ allAVRs <- list(
 # Choose a group to be plotted 
 iGroup <- "ch"
 
-# Extract EFA results for the current group
-iEFA <- allEFAs[[iGroup]]
+# Extract PCA results for the current group
+iPCA <- allPCAs[[iGroup]]
 
 # Choose a factor to be plotted 
 iFactor <- "F2"
@@ -85,16 +85,16 @@ iFactor <- "F2"
 # here we automatically find maximum electrode
 # but it would be better to use a pre-selected electrode
 # based on the expected factor structure
-iEl <- iEFA$average_scores$chan[which.max(abs(iEFA$average_scores[, iFactor]))]
+iEl <- iPCA$average_scores$chan[which.max(abs(iPCA$average_scores[, iFactor]))]
 
 # unstandardize rotated loadings
-iEFA$rotFit$loadings <- iEFA$rotFit$loadings * iEFA$efaFit$varSD
+iPCA$rotFit$loadings <- iPCA$rotFit$loadings * iPCA$pcaFit$varSD
 
 # find peak loading
-iPeakLoad <- max(iEFA$rotFit$loadings[, iFactor]) 
+iPeakLoad <- max(iPCA$rotFit$loadings[, iFactor]) 
 
 # Extract scores for current factor
-iScores <- iEFA$average_scores[, c("cond", "chan", iFactor)]
+iScores <- iPCA$average_scores[, c("cond", "chan", iFactor)]
 
 # Extract the time codes of the epoch
 times <- unique(allAVRs[[iGroup]][["sta"]]$timings$time)
@@ -112,7 +112,7 @@ iGAVR <- gavr2long(allGAVRS, iEl = iEl, iGroup = iGroup, times = times)
 # Compute reconstructed ERP for each observation for this factor
 # and reshape it to long-format.
 iERPest <- makeERPest(iScores = iScores,
-                      iEFA = iEFA, 
+                      iPCA = iPCA, 
                       iFactor = iFactor, 
                       iEl = iEl,
                       times = times)
@@ -133,7 +133,7 @@ time_course <- ggplot(iGAVR,
   #theme_linedraw()  + # if you prefer a white background uncomment this
   scale_y_reverse() +  
   labs(x = "Time [s]" , y = "Voltage [µV]", 
-       title = paste0("Group: ", iGroup,", Factor: ", iFactor,", ", iEl, ", Peak Latency: ", times[which.max(iEFA$rotFit$loadings[, iFactor])], " s"),
+       title = paste0("Group: ", iGroup,", Factor: ", iFactor,", ", iEl, ", Peak Latency: ", times[which.max(iPCA$rotFit$loadings[, iFactor])], " s"),
        color = "Condition") +
   theme(plot.title = element_text(color="black", size=12, hjust = 0.5, 
                                   face = "bold"),
@@ -150,7 +150,7 @@ time_course
 ## the eegUtils-package:
 # We replace the original data with the reconstructed data.
 
-signals <- efa2eeg(iEFA = iEFA, 
+signals <- pca2eeg(iPCA = iPCA, 
                    allAVRs = allAVRs,
                    iGroup = iGroup,
                    iFactor = iFactor)

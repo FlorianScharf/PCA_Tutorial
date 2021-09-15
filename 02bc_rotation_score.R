@@ -18,20 +18,20 @@ source("tools/geominQ_multstart.R") # load custom rotation function
 ## Load data
 # Load the results file from the previous script.
 # Please remember that this script needs to be run once for each group.
-# load("results/02ab_efa/efafit_ad23.Rdata")
-load("results/02ab_efa/efafit_ch21.Rdata")
+# load("results/02ab_pca/pcafit_ad23.Rdata")
+load("results/02ab_pca/pcafit_ch21.Rdata")
 
 ############### 2b: Estimation of rotated factor loadings ###############
 
 ## Standardize factor loadings before rotation
-efaFit$loadings = efaFit$loadings / efaFit$varSD
+pcaFit$loadings = pcaFit$loadings / pcaFit$varSD
 
 ## Use Geomin rotation with 30 random start values.
 # Please be aware that this function can take a while. 
 # This is a custom function which implements a procedure 
 # available from the package GPArotation. 
 # Please see tools/geominQ_multstart.R for details
-rotFit <- geominQ_multstart(A = efaFit$loadings,  # unrotated loadings
+rotFit <- geominQ_multstart(A = pcaFit$loadings,  # unrotated loadings
                             delta = 0.01,     # rotation parameter (geomin epsilon)
                             # Note: We decided to name all parameters consistently with
                             # the GPArotation package despite its deviation from the
@@ -67,19 +67,19 @@ rotFit <- geominQ_multstart(A = efaFit$loadings,  # unrotated loadings
 # Choosing a value of 2 will allow for solutions with higher temporal overlap,
 # choosing higher values will increase the preference for too simple structures.
 
-# rotFit <- Promax(efaFit$loadings, m = 3, normalize = TRUE)
+# rotFit <- Promax(pcaFit$loadings, m = 3, normalize = TRUE)
 
 ## Transfer variances and standard deviations into the new fit object.
-rotFit$varSD = efaFit$varSD
-rotFit$Var = efaFit$Var
-rotFit$group = efaFit$group
+rotFit$varSD = pcaFit$varSD
+rotFit$Var = pcaFit$Var
+rotFit$group = pcaFit$group
 
 ##  Sort factors by variance explained
 
 # Compute unstandardized loadings
 L <- rotFit$loadings * rotFit$varSD
 # Compute proportion of variance explained by each factor
-facVar <- diag(rotFit$Phi %*% t(L) %*% (L)) / sum(diag(efaFit$S)) 
+facVar <- diag(rotFit$Phi %*% t(L) %*% (L)) / sum(diag(pcaFit$S)) 
 
 
 # Return indices of the factors ordered by the variance explained
@@ -103,7 +103,7 @@ rotFit$Phi = diag(flip) %*%  rotFit$Phi %*% diag(flip) # turning factor correlat
 load("results/01_data_import/erpdata.Rdata")
 
 # Again, need to delete columns not containing data from sampling points
-age_group_data = as.matrix(erpdata[erpdata$group == efaFit$group, -c(1:4)])
+age_group_data = as.matrix(erpdata[erpdata$group == pcaFit$group, -c(1:4)])
 
 
 ## Estimate factor scores
@@ -111,14 +111,14 @@ age_group_data = as.matrix(erpdata[erpdata$group == efaFit$group, -c(1:4)])
 # Note that "age_group_data" contains the unstandardized ERP individual averages 
 # of the respective group.
 # Therefore, the factor scores are not centered.
-FacScr = age_group_data %*% efaFit$Sinv %*% (rotFit$loadings * rotFit$varSD) %*% rotFit$Phi
+FacScr = age_group_data %*% pcaFit$Sinv %*% (rotFit$loadings * rotFit$varSD) %*% rotFit$Phi
 
 # Rinv ... generalized inverse of the correlation matrix of the sampling points
 # rotFit$loadings ... standardized factor loadings
 # rotFit$Phi ... factor correlation matrix
 
 # rename columns because they are factors now
-colnames(FacScr) = colnames(paste0("MR", 1:efaFit$factors))
+colnames(FacScr) = colnames(paste0("MR", 1:pcaFit$factors))
 
 # Show descriptive statistics for the factor scores
 psych::describe(FacScr)
@@ -126,17 +126,17 @@ psych::describe(FacScr)
 ## We save the factor scores in a separate object and "reunite" them
 # with the indicator variables describing participant, condition and 
 # electrode site
-scores = data.frame(erpdata[erpdata$group == efaFit$group, 1:4], FacScr)
+scores = data.frame(erpdata[erpdata$group == pcaFit$group, 1:4], FacScr)
 
 ## We save all estimated objects for later steps.
-save(efaFit, rotFit, scores, file = paste0("results/02bc_rotation_score/rotfit_", efaFit$group, efaFit$factors, "_geomin0.01.Rdata"))
+save(pcaFit, rotFit, scores, file = paste0("results/02bc_rotation_score/rotfit_", pcaFit$group, pcaFit$factors, "_geomin0.01.Rdata"))
 
 
 ## Export to MATLAB
 # This is optional. If you prefer to work in MATLAB for visualization purposes,
 # this is how you export the results to a mat-File.
 library(R.matlab)
-writeMat(paste0("results/02bc_rotation_score/rotfit_", efaFit$group, efaFit$factors, "_geomin0.01.mat"), loadings = unclass(rotFit$loadings), phi = unclass(rotFit$Phi), scores = FacScr, varSD = unclass(efaFit$varSD))
+writeMat(paste0("results/02bc_rotation_score/rotfit_", pcaFit$group, pcaFit$factors, "_geomin0.01.mat"), loadings = unclass(rotFit$loadings), phi = unclass(rotFit$Phi), scores = FacScr, varSD = unclass(pcaFit$varSD))
 
 ###############
 

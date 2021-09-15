@@ -17,29 +17,29 @@ library(BayesFactor)
 library(bayestestR)
 library(ggplot2)
 
-## Load the data from both EFAs and put the results into separate objects
+## Load the data from both PCAs and put the results into separate objects
 load("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",  temp_env <- new.env())
-adEFA <- as.list.environment(temp_env)
+adPCA <- as.list.environment(temp_env)
 load("results/02bc_rotation_score/rotfit_ch21_geomin0.01.Rdata",  temp_env <- new.env())
-chEFA <- as.list.environment(temp_env)
+chPCA <- as.list.environment(temp_env)
 
 ## Compute the dependent variables for statistical analyses 
 
-## Adult EFA
+## Adult PCA
 # Compute unstandardized factor loadings
-adEFA$rotFit$loadings_unstd <- adEFA$rotFit$loadings * adEFA$rotFit$varSD
+adPCA$rotFit$loadings_unstd <- adPCA$rotFit$loadings * adPCA$rotFit$varSD
 # Compute the peak loading for each factor
-adEFA$peak_loadings <- apply(adEFA$rotFit$loadings_unstd, MARGIN = 2, FUN = max)
+adPCA$peak_loadings <- apply(adPCA$rotFit$loadings_unstd, MARGIN = 2, FUN = max)
 # Multiply peak loadings with factor scores
-adEFA$scores[,-c(1:4)] = as.matrix(adEFA$scores[,-c(1:4)]) %*% diag(adEFA$peak_loadings)
+adPCA$scores[,-c(1:4)] = as.matrix(adPCA$scores[,-c(1:4)]) %*% diag(adPCA$peak_loadings)
 
-## Child EFA
+## Child PCA
 # Compute unstandardized factor loadings
-chEFA$rotFit$loadings_unstd <- chEFA$rotFit$loadings * chEFA$rotFit$varSD
+chPCA$rotFit$loadings_unstd <- chPCA$rotFit$loadings * chPCA$rotFit$varSD
 # Compute the peak loading for each factor
-chEFA$peak_loadings <- apply(chEFA$rotFit$loadings_unstd, MARGIN = 2, FUN = max)
+chPCA$peak_loadings <- apply(chPCA$rotFit$loadings_unstd, MARGIN = 2, FUN = max)
 # Multiply peak loadings with factor scores
-chEFA$scores[,-c(1:4)] = as.matrix(chEFA$scores[,-c(1:4)]) %*% diag(chEFA$peak_loadings)
+chPCA$scores[,-c(1:4)] = as.matrix(chPCA$scores[,-c(1:4)]) %*% diag(chPCA$peak_loadings)
 
 ## Relable the factors which we labeled in the text.
 # Based on all results we labeled the factors as follows:
@@ -57,15 +57,15 @@ chEFA$scores[,-c(1:4)] = as.matrix(chEFA$scores[,-c(1:4)]) %*% diag(chEFA$peak_l
 
 
 # Which factors need to be relabeled?
-highlighted_FA_ad <- names(adEFA$scores) %in% paste0("X", c(1,2,3,5))
-highlighted_FA_ch <- names(chEFA$scores) %in% paste0("X", c(1,2,5,6))
+highlighted_FA_ad <- names(adPCA$scores) %in% paste0("X", c(1,2,3,5))
+highlighted_FA_ch <- names(chPCA$scores) %in% paste0("X", c(1,2,5,6))
 
 # Rename the respective columns
-names(adEFA$scores)[highlighted_FA_ad] <- c("LDN", "P2", "lP3a", "eP3a")
-names(chEFA$scores)[highlighted_FA_ch] <- c("LDN", "P2", "lP3a", "eP3a")
+names(adPCA$scores)[highlighted_FA_ad] <- c("LDN", "P2", "lP3a", "eP3a")
+names(chPCA$scores)[highlighted_FA_ch] <- c("LDN", "P2", "lP3a", "eP3a")
 
 # Create a new data set containing both groups and only the relevant data
-scores = rbind(chEFA$scores[, c("group", "cond", "subj", "chan", "P2", "eP3a", "lP3a", "LDN")], adEFA$scores[, c("group", "cond", "subj", "chan", "P2", "eP3a", "lP3a", "LDN")])
+scores = rbind(chPCA$scores[, c("group", "cond", "subj", "chan", "P2", "eP3a", "lP3a", "LDN")], adPCA$scores[, c("group", "cond", "subj", "chan", "P2", "eP3a", "lP3a", "LDN")])
 
 # Compute difference scores for plotting purposes
 scores_diff = scores[scores$cond == "nov",]
