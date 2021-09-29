@@ -39,26 +39,16 @@ for (iFile in c("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",
   loadings = melt(loadings, id.vars = "lat", variable_name = "Factor")
   
   ## Mark the factors which shall be highlighted in the loading figure
-  # Based on all results we labeled the factors as follows:
-  ## Adults
-  # "Factor 2" P2
-  # "Factor 5" early P3a
-  # "Factor 3" late P3a
-  # "Factor 1" LDN
-  ## Children
-  # "Factor 2" P2
-  # "Factor 6" earlyP3a
-  # "Factor 5" late P3a
-  # "Factor 1" LDN
+  # We highlight factors in the time range of interest.
   
   
   ### This marks the factors that should be highlighted in the data.
   if (rotFit$group == "ad"){
-    loadings$highlight <- factor(ifelse(loadings$Factor %in% paste0("Factor.", c(1,2,3,5)),
+    loadings$highlight <- factor(ifelse(loadings$Factor %in% paste0("Factor.", c(3:6)),
                                         yes = 1,
                                         no = 0))
   } else if (rotFit$group == "ch") {
-    loadings$highlight <- factor(ifelse(loadings$Factor %in% paste0("Factor.", c(1,2,5,6)),
+    loadings$highlight <- factor(ifelse(loadings$Factor %in% paste0("Factor.", c(3:7)),
                                         yes = 1,
                                         no = 0))
   } else {
