@@ -60,9 +60,9 @@ for (iFile in c("results/02bc_rotation_score/rotfit_ad23_geomin0.01.Rdata",
   ggplot(data = loadings, aes(x = lat, y = value, color = Factor, size = highlight)) +
     geom_line() + 
     scale_size_manual(values = c(0.7,1.5)) +
-    guides(size = FALSE, color = guide_legend(ncol = 2)) +
+    guides(size = "none", color = guide_legend(ncol = 2)) +
     ylim(-1,5) + 
-    xlab("Time [ms]") +
+    xlab("Time [s]") +
     ylab("Unstandardized Loadings") +
     labs(title = ifelse(pcaFit$group == "ad", "Adult PCA Geomin (0.01)", "Child PCA Geomin (0.01)")) + 
     # theme_classic() +
