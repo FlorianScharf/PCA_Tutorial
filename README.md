@@ -1,4 +1,4 @@
-# EFA Tutorial
+# PCA Tutorial
 Accompanying scripts and material to conduct a temporal EFA on ERP data as explained in Scharf, Widmann, Bonmassar & Wetzel (under review, pre-print: https://psyarxiv.com/m5kyv).
 
 ## Abstract
