@@ -82,7 +82,8 @@ eigenRandData = eigen(Srand)$values
 
 # How many eigen values of the real data are
 # above their random counterparts?
-sum(eigenRandData < eigenData) 
+# sum(eigenRandData < eigenData) 
+min(which(eigenRandData >= eigenData)) - 1
 # Uncomment and replace nFac if you want to overwrite
 # the EKC result and use a different number of factors
 # nFac <- 9999
