@@ -96,7 +96,10 @@ for iFac = 1:length( Arg.factors )
         
 end
 
-legend( hPlot( 1 ), Arg.condlabels, 'Location', 'SouthEast' )
+% Show legend
+if isfield( Arg, 'legend' ) && strcmp( 'on', Arg.legend)
+    legend( hPlot( 1 ), Arg.condlabels, 'Location', 'SouthEast' )
+end
 
 if ~isfield( Arg, 'yaxislimits' ) || isempty( 'yaxislimits' )
     Arg.yaxislimits = Arg.maplimits;
