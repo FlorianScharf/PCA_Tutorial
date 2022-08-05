@@ -118,7 +118,7 @@ FacScr = age_group_data %*% pcaFit$Sinv %*% (rotFit$loadings * rotFit$varSD) %*%
 # rotFit$Phi ... factor correlation matrix
 
 # rename columns because they are factors now
-colnames(FacScr) = colnames(paste0("MR", 1:pcaFit$factors))
+colnames(FacScr) = paste0("MR", 1:pcaFit$factors)
 
 # Show descriptive statistics for the factor scores
 psych::describe(FacScr)
